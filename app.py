@@ -18,7 +18,13 @@ def index():
     return "Hello HTN '19!", 200
 
 
-@app.route("/TestAuthentication")
+@app.route("/login-succeeded")
+def login_succeeded():
+    token = request.form["code"]
+    return "Login succeeded! Your token is " + token
+
+
+@app.route("/test-auth")
 def test_authentication():
     auth_code = request.args.get('code')
     auth_data = { 
@@ -39,4 +45,4 @@ def test_authentication():
 
 
 if __name__ == "__main__":
-    app.run(ssl_context='adhoc')
+    app.run(host='0.0.0.0')
