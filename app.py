@@ -12,6 +12,12 @@ BASE_URL = "https://api.freshbooks.com"
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
+
+@app.route("/")
+def index():
+    return "Hello HTN '19!", 200
+
+
 @app.route("/TestAuthentication")
 def test_authentication():
     auth_code = request.args.get('code')
@@ -30,6 +36,7 @@ def test_authentication():
     profile_dict = identity_dict["response"]["profile"]
     response = "You have successfully logged in for " + profile_dict["first_name"] + " " + profile_dict["last_name"]
     return response
+
 
 if __name__ == "__main__":
     app.run(ssl_context='adhoc')
