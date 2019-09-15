@@ -51,7 +51,13 @@ def login():
 @app.route("/authorized")
 def authorized():
     redirect_uri = url_for("authorized", _external=True, _scheme='https')
-    data = dict(code=request.args["code"], redirect_uri=redirect_uri)
+    data = {
+        "grant_type": "authorization_code",
+        "client_secret": os.getenv('CLIENT_SECRET'),
+        "code": request.args.get('code'),
+        "client_id": os.getenv('CLIENT_ID'),
+        "redirect_uri": redirect_uri
+    }
     print(data)
     session = freshbooks.get_auth_session(data=data, decoder=json_decoder)
     return session.get("me").json()
