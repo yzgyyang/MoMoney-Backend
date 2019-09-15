@@ -3,7 +3,7 @@ import json
 import requests
 
 from os.path import join, dirname
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, url_for
 from rauth import OAuth2Service
 
 from dotenv import load_dotenv
@@ -27,8 +27,6 @@ freshbooks = OAuth2Service(
     base_url=BASE_URL,
 )
 
-redirect_uri = "https://momoney.ygy.io/test-auth"
-
 
 @app.route("/")
 def index():
@@ -37,6 +35,7 @@ def index():
 
 @app.route("/login")
 def login():
+    redirect_uri = url_for('authorized', _external=True)
     params = {"scope": "identity",
               "response_type": "code",
               "redirect_uri": redirect_uri,
@@ -46,15 +45,23 @@ def login():
     return redirect(authorize_url)
 
 
+@app.route("/authorized")
+def authorized():
+    redirect_uri = url_for('authorized', _external=True)
+    data = dict(code=request.args["code"], redirect_uri=redirect_uri)
+    session = freshbooks.get_auth_session(data=data)
+    return session.get("me").json()
+
+
 @app.route("/test-auth")
-def test_authentication():
+def test_auth():
     auth_code = request.args.get('code')
     auth_data = { 
         "grant_type": "authorization_code",
         "client_secret": os.getenv('CLIENT_SECRET'),
         "code": auth_code,
         "client_id": os.getenv('CLIENT_ID'),
-        "redirect_uri": os.getenv('REDIRECT_URL')
+        "redirect_uri": redirect_uri
     }
     auth_request = requests.post(BASE_URL + "/auth/oauth/token", json=auth_data)
     access_token_dict = json.loads(auth_request.text)
