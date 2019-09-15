@@ -17,19 +17,14 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 
-# Helper: Compose URL with BASE_URL
-def url(s=""):
-    return BASE_URL + s
-
-
 # Freshbooks OAuth2
 freshbooks = OAuth2Service(
     client_id=os.getenv("CLIENT_ID"),
     client_secret=os.getenv("CLIENT_SECRET"),
     name="freshbooks",
-    authorize_url=url("/auth/oauth/authorize"),
-    access_token_url=url("/auth/oauth/token"),
-    base_url=url(),
+    authorize_url="https://my.freshbooks.com/service/auth/oauth/authorize",
+    access_token_url="https://api.freshbooks.com/auth/oauth/token",
+    base_url=BASE_URL,
 )
 
 redirect_uri = "https://momoney.ygy.io/test-auth"
