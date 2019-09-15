@@ -65,10 +65,10 @@ def authorized():
     auth = freshbooks.get_auth_session(data=data, decoder=json_decoder)
 
     # Save info in session
-    session["token"] = auth.access_token
-    session["me"] = dict(auth.get("https://api.freshbooks.com/auth/api/v1/users/me"))
+    #session["token"] = auth.access_token
+    #session["me"] = dict(auth.get("https://api.freshbooks.com/auth/api/v1/users/me"))
 
-    return session["me"].json()
+    return auth.get("https://api.freshbooks.com/auth/api/v1/users/me").json()
 
 
 @app.route("/expenses")
