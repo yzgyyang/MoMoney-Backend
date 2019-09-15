@@ -9,6 +9,7 @@ from rauth import OAuth2Service
 from dotenv import load_dotenv
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY")
 
 BASE_URL = "https://api.freshbooks.com"
 
