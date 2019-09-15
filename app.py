@@ -28,6 +28,10 @@ freshbooks = OAuth2Service(
 )
 
 
+def json_decoder(payload):
+    return json.loads(payload.decode('utf-8'))
+
+
 @app.route("/")
 def index():
     return "Hello HTN '19!", 200
@@ -49,7 +53,7 @@ def authorized():
     redirect_uri = url_for("authorized", _external=True, _scheme='https')
     data = dict(code=request.args["code"], redirect_uri=redirect_uri)
     print(data)
-    session = freshbooks.get_auth_session(data=data)
+    session = freshbooks.get_auth_session(data=data, decoder=json_decoder)
     return session.get("me").json()
 
 
