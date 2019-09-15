@@ -36,7 +36,8 @@ def index():
 @app.route("/login")
 def login():
     redirect_uri = url_for('authorized', _external=True)
-    params = {"redirect_uri": redirect_uri}
+    params = {"redirect_uri": redirect_uri,
+              "response_type": "code"}
 
     authorize_url = freshbooks.get_authorize_url(**params)
     print(authorize_url)
