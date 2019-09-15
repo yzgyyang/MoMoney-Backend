@@ -10,7 +10,7 @@ from rauth import OAuth2Service
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")
+app.secret_key = os.urandom(24)
 Session(app)
 
 BASE_URL = "https://api.freshbooks.com"
@@ -65,8 +65,7 @@ def authorized():
 
     # Save info in session
     session["token"] = auth.access_token
-    session["me"] = auth.get("https://api.freshbooks.com/auth/api/v1/users/me")
-    session["auth"] = auth
+    session["me"] = dict(auth.get("https://api.freshbooks.com/auth/api/v1/users/me"))
 
     return session["me"].json()
 
