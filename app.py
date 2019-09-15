@@ -58,9 +58,8 @@ def authorized():
         "client_id": os.getenv('CLIENT_ID'),
         "redirect_uri": redirect_uri
     }
-    print(data)
     session = freshbooks.get_auth_session(data=data, decoder=json_decoder)
-    return session.get("me").json()
+    return session.get("https://api.freshbooks.com/auth/api/v1/users/me").json()
 
 
 @app.route("/test-auth")
