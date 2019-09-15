@@ -11,7 +11,8 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-Session(app)
+sess = Session()
+sess.init_app(app)
 
 BASE_URL = "https://api.freshbooks.com"
 
