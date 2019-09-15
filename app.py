@@ -35,7 +35,7 @@ def index():
 
 @app.route("/login")
 def login():
-    redirect_uri = url_for('authorized', _external=True)
+    redirect_uri = url_for("authorized", _external=True, _scheme='https')
     params = {"redirect_uri": redirect_uri,
               "response_type": "code"}
 
@@ -46,7 +46,7 @@ def login():
 
 @app.route("/authorized")
 def authorized():
-    redirect_uri = url_for('authorized', _external=True)
+    redirect_uri = url_for("authorized", _external=True, _scheme='https')
     data = dict(code=request.args["code"], redirect_uri=redirect_uri)
     print(data)
     session = freshbooks.get_auth_session(data=data)
@@ -55,6 +55,7 @@ def authorized():
 
 @app.route("/test-auth")
 def test_auth():
+    redirect_uri = url_for("authorized", _external=True, _scheme='https')
     auth_code = request.args.get('code')
     auth_data = { 
         "grant_type": "authorization_code",
@@ -74,4 +75,4 @@ def test_auth():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', ssl_context='adhoc')
+    app.run(debug=True, host='0.0.0.0')
