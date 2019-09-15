@@ -39,6 +39,7 @@ def login():
     params = {"redirect_uri": redirect_uri}
 
     authorize_url = freshbooks.get_authorize_url(**params)
+    print(authorize_url)
     return redirect(authorize_url)
 
 
@@ -46,6 +47,7 @@ def login():
 def authorized():
     redirect_uri = url_for('authorized', _external=True)
     data = dict(code=request.args["code"], redirect_uri=redirect_uri)
+    print(data)
     session = freshbooks.get_auth_session(data=data)
     return session.get("me").json()
 
