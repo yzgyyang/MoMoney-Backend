@@ -3,7 +3,7 @@ import json
 import requests
 
 from os.path import join, dirname
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, session
 from rauth import OAuth2Service
 
 from dotenv import load_dotenv
@@ -58,8 +58,22 @@ def authorized():
         "client_id": os.getenv('CLIENT_ID'),
         "redirect_uri": redirect_uri
     }
-    session = freshbooks.get_auth_session(data=data, decoder=json_decoder)
-    return session.get("https://api.freshbooks.com/auth/api/v1/users/me").json()
+    auth = freshbooks.get_auth_session(data=data, decoder=json_decoder)
+
+    # Save info in session
+    session["token"] = auth.access_token
+    session["me"] = auth.get("https://api.freshbooks.com/auth/api/v1/users/me")
+    session["auth"] = auth
+
+    return session["me"].json()
+
+
+@app.route("/expenses")
+def expenses():
+    auth = session["auth"]
+    expenses = auth.get("https://api.freshbooks.com/accounting/account/{}/expenses/expenses".format(session["me"]["roles"][0]["accountid"]))
+
+    return expenses.json()
 
 
 @app.route("/test-auth")
